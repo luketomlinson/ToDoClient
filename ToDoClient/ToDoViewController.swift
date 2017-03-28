@@ -100,8 +100,7 @@ extension ToDoViewController: UITableViewDataSource {
             print("Deleting from action")
             
             DataStore.deleteTask(at: indexPath) {
-                tableView.deleteRows(at: [indexPath], with: .left)
-                DataStore.shouldNotify = true
+
             }
         }
         

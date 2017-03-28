@@ -15,6 +15,11 @@ class AddTaskViewController: UIViewController {
     @IBOutlet var titleField: UITextField!
     @IBOutlet var descriptionField: UITextView!
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationController?.navigationBar.tintColor = .white
+    }
+    
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)

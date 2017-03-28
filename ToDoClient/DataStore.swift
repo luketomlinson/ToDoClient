@@ -64,7 +64,6 @@ class DataStore {
     }
     
     static func deleteTask(at indexPath:IndexPath, completion: @escaping () -> Void) {
-        shouldNotify = false
         let task:Task
         var index:Int = indexPath.row
         switch indexPath.section {
