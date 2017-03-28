@@ -25,12 +25,17 @@ class ToDoViewController: UIViewController {
         
         tableView.refreshControl = refresh
         refresh.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        refreshData()
+        
+        DataStore.handler = { [weak self] in
+            self?.tableView.reloadData()
+        }
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        refreshData()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.reloadData()
     }
     
 }
@@ -76,9 +81,6 @@ extension ToDoViewController: UITableViewDataSource {
         return true
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UITableViewAutomaticDimension
-//    }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
@@ -97,10 +99,9 @@ extension ToDoViewController: UITableViewDataSource {
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
             print("Deleting from action")
             
-            DataStore.deleteTask(at: indexPath) { [weak self] in
-                
+            DataStore.deleteTask(at: indexPath) {
                 tableView.deleteRows(at: [indexPath], with: .left)
-//                self?.refreshData()
+                DataStore.shouldNotify = true
             }
         }
         
@@ -143,6 +144,7 @@ extension ToDoViewController {
                 self?.tableView.reloadData()
                 self?.tableView.refreshControl?.endRefreshing()
             }
+            
         }
     }
 }

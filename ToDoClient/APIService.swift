@@ -19,9 +19,7 @@ enum JSONError:Error {
 
 struct EndPoint {
     static var baseEndPoint:String {
-        
-        return "http://localhost:8080"
-//        return UserDefaults.standard.string(forKey: "baseURL") ?? ""
+        return "http://" + SettingsService.endpoint
     }
     static let addTask = "/addTask/"
     static let completed = "/completed/all"
@@ -73,7 +71,9 @@ class APIService {
                 
                 var updatedTask = task
                 updatedTask.uid = taskID
-                completion(.success(updatedTask))
+                DispatchQueue.main.async {
+                    completion(.success(updatedTask))
+                }
             
             } else {
                 completion(.error(JSONError.deserializationError))
@@ -134,7 +134,9 @@ class APIService {
         
         let task = session.dataTask(with: urlRequest) { data, response, error in
             if error == nil {
-                completion()
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
         }
         
@@ -153,7 +155,9 @@ class APIService {
         
         let task = session.dataTask(with: urlRequest) { data, response, error in
             if error == nil {
-                completion()
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
         }
         

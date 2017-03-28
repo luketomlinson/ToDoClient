@@ -10,7 +10,16 @@ import Foundation
 
 class DataStore {
     
-    static var tasks: [Task] = []
+    static var tasks: [Task] = [] {
+        didSet{
+            if shouldNotify {
+                handler?()
+            }
+        }
+    }
+    
+    static var shouldNotify = true
+    static var handler: (() -> Void)?
     
     static var completedTasks: [Task] {
         return tasks.filter({$0.completed})
@@ -29,8 +38,8 @@ class DataStore {
             
             switch result {
             case .success(let tasks):
-                self.tasks = tasks
                 DispatchQueue.main.async {
+                    DataStore.tasks = tasks
                     completion()
                 }
             case .error:
@@ -55,16 +64,20 @@ class DataStore {
     }
     
     static func deleteTask(at indexPath:IndexPath, completion: @escaping () -> Void) {
-        
+        shouldNotify = false
         let task:Task
+        var index:Int = indexPath.row
         switch indexPath.section {
         case 0:
             task = incompleteTasks[indexPath.row]
         case 1:
             task = completedTasks[indexPath.row]
+            index += incompleteTasks.count
         default:
             task = .empty
         }
+        
+        tasks.remove(at: index)
         
         APIService.deleteTask(task: task, completion: completion)
     }

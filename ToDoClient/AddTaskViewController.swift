@@ -15,27 +15,6 @@ class AddTaskViewController: UIViewController {
     @IBOutlet var titleField: UITextField!
     @IBOutlet var descriptionField: UITextView!
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        guard let title = titleField.text, title.characters.count > 0 else {
-            return
-        }
-        
-        let description = descriptionField.text ?? ""
-        
-        let task = Task(uid: "", description: description, title: title)
-        
-        APIService.addTask(task: task) { result in
-            
-            switch result {
-            case .success(let task):
-                DataStore.addTask(task: task)
-            case .error(let error):
-                print(error.localizedDescription)
-            }
-            
-        }
-    }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -58,10 +37,6 @@ class AddTaskViewController: UIViewController {
             
         }
 
-    }
-    
-    override func unwind(for unwindSegue: UIStoryboardSegue, towardsViewController subsequentVC: UIViewController) {
-        
     }
     
 }
