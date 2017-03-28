@@ -33,11 +33,11 @@ struct EndPoint {
     }
     
     static func completeTask(taskID:String) -> String {
-        return "/completeTask/\(taskID)"
+        return "/completeTask/\(taskID)/"
     }
     
     static func removeTask(taskID:String) -> String {
-        return "/removeTask/\(taskID)"
+        return "/removeTask/\(taskID)/"
 
     }
 
@@ -122,6 +122,46 @@ class APIService {
         
         
     }
+    
+    static func completeTask(task:Task,completion: @escaping () -> Void ) {
+        let urlString = EndPoint.baseEndPoint + EndPoint.completeTask(taskID: task.uid)
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            if error == nil {
+                completion()
+            }
+        }
+        
+        task.resume()
+
+    }
+    
+    static func deleteTask(task:Task,completion: @escaping () -> Void ) {
+        let urlString = EndPoint.baseEndPoint + EndPoint.removeTask(taskID: task.uid)
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            if error == nil {
+                completion()
+            }
+        }
+        
+        task.resume()
+        
+    }
+
+    
     
     
     

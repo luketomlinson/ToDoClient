@@ -12,6 +12,14 @@ class DataStore {
     
     static var tasks: [Task] = []
     
+    static var completedTasks: [Task] {
+        return tasks.filter({$0.completed})
+    }
+    
+    static var incompleteTasks: [Task] {
+        return tasks.filter({!$0.completed})
+    }
+    
     static func addTask(task:Task) {
         tasks.append(task)
     }
@@ -22,10 +30,42 @@ class DataStore {
             switch result {
             case .success(let tasks):
                 self.tasks = tasks
-                completion()
-            case .error(let err):
+                DispatchQueue.main.async {
+                    completion()
+                }
+            case .error:
                 break
             }
         }
+    }
+    
+    static func completeTask(at indexPath:IndexPath, completion: @escaping () -> Void) {
+        
+        let task:Task
+        switch indexPath.section {
+        case 0:
+            task = incompleteTasks[indexPath.row]
+        case 1:
+            task = completedTasks[indexPath.row]
+        default:
+            task = .empty
+        }
+        
+        APIService.completeTask(task: task, completion: completion)
+    }
+    
+    static func deleteTask(at indexPath:IndexPath, completion: @escaping () -> Void) {
+        
+        let task:Task
+        switch indexPath.section {
+        case 0:
+            task = incompleteTasks[indexPath.row]
+        case 1:
+            task = completedTasks[indexPath.row]
+        default:
+            task = .empty
+        }
+        
+        APIService.deleteTask(task: task, completion: completion)
     }
 }

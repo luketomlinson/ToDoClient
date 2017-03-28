@@ -12,6 +12,8 @@ struct Task {
     var uid:String
     var description:String
     var title:String
+    var completed:Bool = false
+    static let empty = Task(uid: "", description: "", title: "")
     
     func toDict() -> [String:String] {
         var dict:[String:String] = [:]
@@ -38,12 +40,13 @@ struct Task {
         
         guard let title = json["title"] as? String,
             let uid = json["uid"] as? String,
-            let description = json["description"] as? String, title.characters.count > 0 else {
+            let description = json["description"] as? String, title.characters.count > 0, let completed = json["completed"] as? Bool else {
             return nil
         }
         
         self.title = title
         self.uid = uid
         self.description = description
+        self.completed = completed
     }
 }
